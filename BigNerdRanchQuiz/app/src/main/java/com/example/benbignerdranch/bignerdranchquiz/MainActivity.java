@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.benbignerdranch.bignerdranchquiz.QuestionModel;
@@ -12,7 +13,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Button mTrueButton;
     private Button mFalseButton;
-    private Button mNextButton;
+    private ImageButton mNextButton;
+    private ImageButton mPreviousButton;
     private TextView mQuestionTextView;
 
     private QuestionModel[] mQuestionBank = new QuestionModel[] {
@@ -25,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     private int mCurrentIndex = 0;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,8 +37,9 @@ public class MainActivity extends AppCompatActivity {
         mTrueButton = (Button) findViewById(R.id.true_button);
         mFalseButton = (Button) findViewById(R.id.false_button);
 
-        //Wiring up next button
-        mNextButton = (Button) findViewById(R.id.next_button);
+        //Wiring up next and previous buttons
+        mNextButton = (ImageButton) findViewById(R.id.next_button);
+        mPreviousButton = (ImageButton) findViewById(R.id.previous_button);
 
         //Wiring up the QuestionTextView
         mQuestionTextView = (TextView) findViewById(R.id.question_text);
@@ -63,6 +67,19 @@ public class MainActivity extends AppCompatActivity {
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 updateQuestion();
 
+            }
+        });
+
+        mPreviousButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCurrentIndex >= .1) {
+                    mCurrentIndex = (mCurrentIndex - 1) % mQuestionBank.length;
+                    updateQuestion();
+                }
+                else {
+                    Toast.makeText(MainActivity.this, "This is the first question!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

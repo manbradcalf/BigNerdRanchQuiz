@@ -8,13 +8,13 @@
     tools:context="com.example.benbignerdranch.bignerdranchquiz.MainActivity">
 
     <TextView
+        android:id="@+id/question_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/question_text"
-        android:id="@+id/question_text"
-        android:textSize="16sp"
+        android:gravity="center_horizontal"
         android:paddingBottom="8dp"
-        android:gravity="center_horizontal" />
+        android:text="@string/question_text"
+        android:textSize="16sp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -24,21 +24,35 @@
 
         <Button
             android:id="@+id/true_button"
-            android:text="@string/true_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="@string/true_button" />
 
         <Button
             android:id="@+id/false_button"
-            android:text="@string/false_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="@string/false_button" />
 
     </LinearLayout>
 
-    <Button
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/next_button"
-        android:text="@string/next"/>
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/previous_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/arrow_left"/>
+
+        <ImageButton
+            android:id="@+id/next_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/arrow_right"/>
+
+
+    </LinearLayout>
 </LinearLayout>
