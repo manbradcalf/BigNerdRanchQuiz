@@ -1,7 +1,9 @@
 package com.example.benbignerdranch.bignerdranchquiz;
 
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -27,17 +29,19 @@ public class MainActivity extends AppCompatActivity {
 
     private int mCurrentIndex = 0;
 
+    private static final String TAG = "MainActivity";
+    private static final String KEY_INDEX = "Index";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Wiring up the True & False buttons
+        //Wiring up buttons
         mTrueButton = (Button) findViewById(R.id.true_button);
         mFalseButton = (Button) findViewById(R.id.false_button);
-
-        //Wiring up next and previous buttons
         mNextButton = (ImageButton) findViewById(R.id.next_button);
         mPreviousButton = (ImageButton) findViewById(R.id.previous_button);
 
@@ -53,14 +57,12 @@ public class MainActivity extends AppCompatActivity {
                 checkAnswer(true);
             }
         });
-
         mFalseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 checkAnswer(false);
             }
         });
-
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,8 +85,50 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        if (savedInstanceState != null) {
+            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+        }
+
         updateQuestion();
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart() called");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause() called");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume() called");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop() called");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy() called");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSaveInstanceState");
+        savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
+    }
+
 
     private void incorrectToast() {
         Toast.makeText(MainActivity.this,

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.benbignerdranch.bignerdranchquiz.MainActivity">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/true_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/true_button" />
+
+        <Button
+            android:id="@+id/false_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/false_button" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/question_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="@string/question_text"
+        android:padding="24dp"
+        android:textSize="16sp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="24dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|bottom"
+        android:orientation="horizontal"
+        android:layout_marginBottom="24dp">
+
+    <ImageButton
+        android:id="@+id/previous_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|bottom"
+        android:src="@drawable/arrow_left"/>
+
+    <ImageButton
+        android:id="@+id/next_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:src="@drawable/arrow_right"/>
+    </LinearLayout>
+
+
+</FrameLayout>
