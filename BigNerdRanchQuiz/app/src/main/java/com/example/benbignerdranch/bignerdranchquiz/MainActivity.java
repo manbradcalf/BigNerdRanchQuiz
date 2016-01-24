@@ -1,6 +1,8 @@
 package com.example.benbignerdranch.bignerdranchquiz;
 
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,9 +17,11 @@ public class MainActivity extends AppCompatActivity {
 
     private Button mTrueButton;
     private Button mFalseButton;
+    private Button mCheatButton;
     private ImageButton mNextButton;
     private ImageButton mPreviousButton;
     private TextView mQuestionTextView;
+    private Boolean mIsCheater;
 
     private QuestionModel[] mQuestionBank = new QuestionModel[] {
             new QuestionModel(R.string.question_africa, false),
@@ -31,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private static final String KEY_INDEX = "Index";
+    private static final int REQUEST_CODE_CHEAT = 0;
+
 
 
 
@@ -44,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         mFalseButton = (Button) findViewById(R.id.false_button);
         mNextButton = (ImageButton) findViewById(R.id.next_button);
         mPreviousButton = (ImageButton) findViewById(R.id.previous_button);
+        mCheatButton = (Button) findViewById(R.id.cheat_button);
 
         //Wiring up the QuestionTextView
         mQuestionTextView = (TextView) findViewById(R.id.question_text);
@@ -67,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                mIsCheater = false;
                 updateQuestion();
 
             }
@@ -82,6 +90,17 @@ public class MainActivity extends AppCompatActivity {
                 else {
                     Toast.makeText(MainActivity.this, "This is the first question!", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        mCheatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Start CheatActivity
+                boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
+                Intent i = CheatActivity.newIntent(MainActivity.this, answerIsTrue);
+                startActivityForResult(i, REQUEST_CODE_CHEAT);
+
             }
         });
 
@@ -129,26 +148,35 @@ public class MainActivity extends AppCompatActivity {
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
 
-    private void incorrectToast() {
-        Toast.makeText(MainActivity.this,
-                R.string.incorrect_toast,
-                Toast.LENGTH_SHORT).show();
-    }
-
-    private void correctToast() {
-        Toast.makeText(MainActivity.this,
-                R.string.correct_toast,
-                Toast.LENGTH_SHORT).show();
+        if (requestCode == REQUEST_CODE_CHEAT) {
+            if (data == null) {
+                return;
+            }
+            mIsCheater = CheatActivity.wasAnswerShown(data);
+        }
     }
 
     private void checkAnswer(boolean userPressedTrue) {
             boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
-            if (answerIsTrue == userPressedTrue) {correctToast();}
-            else {incorrectToast();}
-        }
 
+            int messageResId;
 
+            if (mIsCheater) {messageResId = R.string.judgement_toast;}
+            else {
+                if (userPressedTrue == answerIsTrue) {
+                    messageResId = R.string.correct_toast;}
+                else {
+                    messageResId = R.string.incorrect_toast;}
+                }
+            Toast.makeText(MainActivity.this,
+                messageResId, Toast.LENGTH_SHORT).show();
+            }
 
     private void updateQuestion() {
         int question = mQuestionBank[mCurrentIndex].getTextResId();

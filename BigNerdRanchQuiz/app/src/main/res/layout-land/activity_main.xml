@@ -37,12 +37,6 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="24dp" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center|bottom"
-        android:orientation="horizontal"
-        android:layout_marginBottom="24dp">
 
     <ImageButton
         android:id="@+id/previous_button"
@@ -57,7 +51,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right|bottom"
         android:src="@drawable/arrow_right"/>
-    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/cheat_button"
+        android:text="@string/cheat_button"
+        android:layout_gravity="bottom|center"/>
+
 
 
 </FrameLayout>
