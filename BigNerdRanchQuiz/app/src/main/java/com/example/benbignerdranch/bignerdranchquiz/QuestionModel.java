@@ -6,12 +6,16 @@ package com.example.benbignerdranch.bignerdranchquiz;
 public class QuestionModel {
 
     private int mTextResId;
-    private boolean mAnswerTrue;
 
-    public QuestionModel(int TextResId, boolean AnswerTrue) {
+
+    private boolean mAnswerTrue;
+    private boolean mCheat;
+
+    public QuestionModel(int TextResId, boolean AnswerTrue, boolean Cheat) {
 
         mAnswerTrue = AnswerTrue;
         mTextResId = TextResId;
+        mCheat = Cheat;
     }
 
     public int getTextResId() {
@@ -29,4 +33,8 @@ public class QuestionModel {
     public void setAnswerTrue(boolean mAnswerTrue) {
         this.mAnswerTrue = mAnswerTrue;
     }
+
+    public boolean isCheat() {return mCheat;}
+
+    public void setCheat(Boolean Cheat) {this.mCheat = Cheat;}
 }

@@ -24,11 +24,11 @@ public class MainActivity extends AppCompatActivity {
     private Boolean mIsCheater;
 
     private QuestionModel[] mQuestionBank = new QuestionModel[] {
-            new QuestionModel(R.string.question_africa, false),
-            new QuestionModel(R.string.question_oceans, false),
-            new QuestionModel(R.string.question_mideast, false),
-            new QuestionModel(R.string.question_americas, true),
-            new QuestionModel(R.string.question_asia, true),
+            new QuestionModel(R.string.question_africa, false, false),
+            new QuestionModel(R.string.question_oceans, false, false),
+            new QuestionModel(R.string.question_mideast, false, false),
+            new QuestionModel(R.string.question_americas, true, false),
+            new QuestionModel(R.string.question_asia, true, false),
     };
 
     private int mCurrentIndex = 0;
@@ -99,9 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 // Start CheatActivity
                 boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
                 Intent i = CheatActivity.newIntent(MainActivity.this, answerIsTrue);
-                startActivityForResult(i, REQUEST_CODE_CHEAT);
-
-            }
+                startActivityForResult(i, REQUEST_CODE_CHEAT);}
         });
 
         if (savedInstanceState != null) {
@@ -159,6 +157,9 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             mIsCheater = CheatActivity.wasAnswerShown(data);
+            if (mIsCheater == true) {
+                mQuestionBank[mCurrentIndex].setCheat(true);
+            }
         }
     }
 
@@ -167,7 +168,8 @@ public class MainActivity extends AppCompatActivity {
 
             int messageResId;
 
-            if (mIsCheater) {messageResId = R.string.judgement_toast;}
+            if (mQuestionBank[mCurrentIndex].isCheat() == true) {
+                messageResId = R.string.judgement_toast;}
             else {
                 if (userPressedTrue == answerIsTrue) {
                     messageResId = R.string.correct_toast;}
