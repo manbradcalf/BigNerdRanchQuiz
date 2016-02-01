@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         // Rehydrating from previous activity
         if (savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
-            mQuestionBank = new QuestionModel[]{savedInstanceState.getParcelable(QUESTION_ARRAY)};
+            mQuestionBank = (QuestionModel[]) savedInstanceState.getParcelableArray(QUESTION_ARRAY);
         }
 
         //Wiring up buttons
@@ -117,17 +117,7 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(savedInstanceState);
         Log.i(TAG, "onSaveInstanceState");
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
-        savedInstanceState.putParcelable("QuestionArray", new Parcelable() {
-            @Override
-            public int describeContents() {
-                return 0;
-            }
-
-            @Override
-            public void writeToParcel(Parcel dest, int flags) {
-
-            }
-        });
+        savedInstanceState.putParcelableArray(QUESTION_ARRAY, mQuestionBank);
     }
 
     @Override
