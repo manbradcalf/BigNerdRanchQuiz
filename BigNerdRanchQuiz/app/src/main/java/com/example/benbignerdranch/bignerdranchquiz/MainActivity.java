@@ -3,6 +3,8 @@ package com.example.benbignerdranch.bignerdranchquiz;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,7 +13,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.example.benbignerdranch.bignerdranchquiz.QuestionModel;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,7 +24,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView mQuestionTextView;
     private Boolean mIsCheater;
 
-    private QuestionModel[] mQuestionBank = new QuestionModel[] {
+
+    private QuestionModel[] mQuestionBank = new QuestionModel[]{
             new QuestionModel(R.string.question_africa, false, false),
             new QuestionModel(R.string.question_oceans, false, false),
             new QuestionModel(R.string.question_mideast, false, false),
@@ -36,14 +38,19 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final String KEY_INDEX = "Index";
     private static final int REQUEST_CODE_CHEAT = 0;
-
-
+    private static final String QUESTION_ARRAY = "QuestionArray";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Rehydrating from previous activity
+        if (savedInstanceState != null) {
+            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+            mQuestionBank = new QuestionModel[]{savedInstanceState.getParcelable(QUESTION_ARRAY)};
+        }
 
         //Wiring up buttons
         mTrueButton = (Button) findViewById(R.id.true_button);
@@ -86,8 +93,7 @@ public class MainActivity extends AppCompatActivity {
                 if (mCurrentIndex >= .1) {
                     mCurrentIndex = (mCurrentIndex - 1) % mQuestionBank.length;
                     updateQuestion();
-                }
-                else {
+                } else {
                     Toast.makeText(MainActivity.this, "This is the first question!", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -99,14 +105,69 @@ public class MainActivity extends AppCompatActivity {
                 // Start CheatActivity
                 boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
                 Intent i = CheatActivity.newIntent(MainActivity.this, answerIsTrue);
-                startActivityForResult(i, REQUEST_CODE_CHEAT);}
+                startActivityForResult(i, REQUEST_CODE_CHEAT);
+            }
         });
 
-        if (savedInstanceState != null) {
-            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+        updateQuestion();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSaveInstanceState");
+        savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
+        savedInstanceState.putParcelable("QuestionArray", new Parcelable() {
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
         }
 
-        updateQuestion();
+        if (requestCode == REQUEST_CODE_CHEAT) {
+            if (data == null) {
+                return;
+            }
+            mIsCheater = CheatActivity.wasAnswerShown(data);
+            if (mIsCheater == true) {
+                mQuestionBank[mCurrentIndex].setCheat(true);
+            }
+        }
+    }
+
+    private void checkAnswer(boolean userPressedTrue) {
+        boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
+
+        int messageResId;
+
+        if (mQuestionBank[mCurrentIndex].isCheat() == true) {
+            messageResId = R.string.judgement_toast;
+        } else {
+            if (userPressedTrue == answerIsTrue) {
+                messageResId = R.string.correct_toast;
+            } else {
+                messageResId = R.string.incorrect_toast;
+            }
+        }
+        Toast.makeText(MainActivity.this,
+                messageResId, Toast.LENGTH_SHORT).show();
+    }
+
+    private void updateQuestion() {
+        int question = mQuestionBank[mCurrentIndex].getTextResId();
+        mQuestionTextView.setText(question);
     }
 
     @Override
@@ -137,51 +198,5 @@ public class MainActivity extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy() called");
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-        Log.i(TAG, "onSaveInstanceState");
-        savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode != Activity.RESULT_OK) {
-            return;
-        }
-
-        if (requestCode == REQUEST_CODE_CHEAT) {
-            if (data == null) {
-                return;
-            }
-            mIsCheater = CheatActivity.wasAnswerShown(data);
-            if (mIsCheater == true) {
-                mQuestionBank[mCurrentIndex].setCheat(true);
-            }
-        }
-    }
-
-    private void checkAnswer(boolean userPressedTrue) {
-            boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
-
-            int messageResId;
-
-            if (mQuestionBank[mCurrentIndex].isCheat() == true) {
-                messageResId = R.string.judgement_toast;}
-            else {
-                if (userPressedTrue == answerIsTrue) {
-                    messageResId = R.string.correct_toast;}
-                else {
-                    messageResId = R.string.incorrect_toast;}
-                }
-            Toast.makeText(MainActivity.this,
-                messageResId, Toast.LENGTH_SHORT).show();
-            }
-
-    private void updateQuestion() {
-        int question = mQuestionBank[mCurrentIndex].getTextResId();
-        mQuestionTextView.setText(question);
     }
 }
